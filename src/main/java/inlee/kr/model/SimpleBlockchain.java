@@ -8,10 +8,12 @@ import java.util.Map;
 public class SimpleBlockchain implements Blockchain<SimpleBlock> {
     private List<SimpleBlock> blockchain;
     private int hashRounds;
+    private int difficulty;
 
-    public SimpleBlockchain(int hashRounds) {
+    public SimpleBlockchain(int hashRounds, int difficulty) {
         this.blockchain = new ArrayList<>();
         this.hashRounds = hashRounds;
+        this.difficulty = difficulty;
         initializeChain();
     }
 
@@ -19,7 +21,7 @@ public class SimpleBlockchain implements Blockchain<SimpleBlock> {
     public void addBlock(SimpleBlock block) {
         SimpleBlock latestBlock = blockchain.get(blockchain.size() - 1);
         block.setPreviousHash(latestBlock.getHash());
-        block.setHash(block.calculateHash(hashRounds));
+        block.mineBlock(difficulty, hashRounds);
         blockchain.add(block);
     }
 
@@ -48,6 +50,8 @@ public class SimpleBlockchain implements Blockchain<SimpleBlock> {
     public void initializeChain() {
         Map<String, Object> genesisData = new HashMap<>();
         genesisData.put("message", "Genesis Block");
-        this.blockchain.add(new SimpleBlock("0", genesisData));
+        SimpleBlock genesisBlock = new SimpleBlock("0", genesisData);
+        genesisBlock.mineBlock(difficulty, hashRounds);
+        this.blockchain.add(genesisBlock);
     }
 }
