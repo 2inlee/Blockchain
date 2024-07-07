@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 public interface Block {
-    String calculateHash();
+    String calculateHash(int rounds);
     String getPreviousHash();
     void setPreviousHash(String previousHash);
     String getHash();

@@ -17,15 +17,18 @@ public class SimpleBlock implements Block {
         this.previousHash = previousHash;
         this.data = data;
         this.timeStamp = LocalDateTime.now();
-        this.hash = calculateHash();
+        this.hash = calculateHash(1); // 기본적으로 1 라운드로 설정
     }
 
     @Override
-    public String calculateHash() {
+    public String calculateHash(int rounds) {
         String dataToHash = previousHash + data.toString() + timeStamp.toString();
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hashBytes = digest.digest(dataToHash.getBytes(StandardCharsets.UTF_8));
+            byte[] hashBytes = dataToHash.getBytes(StandardCharsets.UTF_8);
+            for (int i = 0; i < rounds; i++) {
+                hashBytes = digest.digest(hashBytes);
+            }
             StringBuilder hexString = new StringBuilder();
             for (byte b : hashBytes) {
                 String hex = Integer.toHexString(0xff & b);

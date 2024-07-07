@@ -1,4 +1,3 @@
-
 package inlee.kr.model;
 
 import java.util.ArrayList;
@@ -8,9 +7,11 @@ import java.util.Map;
 
 public class SimpleBlockchain implements Blockchain<SimpleBlock> {
     private List<SimpleBlock> blockchain;
+    private int hashRounds;
 
-    public SimpleBlockchain() {
+    public SimpleBlockchain(int hashRounds) {
         this.blockchain = new ArrayList<>();
+        this.hashRounds = hashRounds;
         initializeChain();
     }
 
@@ -18,7 +19,7 @@ public class SimpleBlockchain implements Blockchain<SimpleBlock> {
     public void addBlock(SimpleBlock block) {
         SimpleBlock latestBlock = blockchain.get(blockchain.size() - 1);
         block.setPreviousHash(latestBlock.getHash());
-        block.setHash(block.calculateHash());
+        block.setHash(block.calculateHash(hashRounds));
         blockchain.add(block);
     }
 
@@ -28,7 +29,7 @@ public class SimpleBlockchain implements Blockchain<SimpleBlock> {
             SimpleBlock currentBlock = blockchain.get(i);
             SimpleBlock previousBlock = blockchain.get(i - 1);
 
-            if (!currentBlock.getHash().equals(currentBlock.calculateHash())) {
+            if (!currentBlock.getHash().equals(currentBlock.calculateHash(hashRounds))) {
                 return false;
             }
             if (!currentBlock.getPreviousHash().equals(previousBlock.getHash())) {
